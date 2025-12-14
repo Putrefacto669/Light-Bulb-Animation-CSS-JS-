@@ -1,0 +1,831 @@
+/* ====== GLOBAL ====== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #111 0%, #222 100%);
+  transition: background-color 1s ease, background-image 1s ease;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Sombra ambiental - MEJORADA */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top,
+    rgba(255, 255, 255, 0.15),
+    rgba(0, 0, 0, 0) 70%
+  );
+  pointer-events: none;
+  transition: opacity 1s ease, background 1s ease;
+  opacity: 1;
+  z-index: 0;
+}
+
+/* Modo Día */
+body.day {
+  background: linear-gradient(135deg, #f2f2f2 0%, #e6e6e6 100%);
+}
+
+body.day::after {
+  background: radial-gradient(circle at top,
+    rgba(255, 255, 255, 0.7),
+    rgba(242, 242, 242, 0) 70%
+  );
+  opacity: 0.6;
+}
+
+/* Modo Noche */
+body.night::after {
+  opacity: 1;
+}
+
+/* ====== CONTENEDOR ====== */
+.lightBulbs {
+  display: flex;
+  gap: 90px;
+  margin-top: 40px;
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+body.day .lightBulbs {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ====== BOMBILLO ====== */
+.bulb {
+  position: relative;
+  width: 120px;
+  height: 450px;
+  cursor: pointer;
+  transform-origin: top center;
+  transition: transform 0.3s ease;
+}
+
+.bulb:hover {
+  transform: translateY(-5px);
+}
+
+/* Etiqueta del bombillo */
+.bulb-label {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.bulb:hover .bulb-label {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.9);
+}
+
+body.day .bulb-label {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+/* ====== CABLE ====== */
+.cord {
+  width: 4px;
+  height: 220px;
+  background: linear-gradient(to bottom, #333, #000);
+  margin: 0 auto;
+  transform-origin: top;
+  border-radius: 2px;
+}
+
+/* ====== SOPORTE ====== */
+.holder {
+  width: 44px;
+  height: 22px;
+  background: linear-gradient(to bottom, #444, #222);
+  border-radius: 6px;
+  margin: 0 auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* ====== VIDRIO ====== */
+.glass {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin: 12px auto;
+  opacity: 0.15;
+  filter: brightness(0.6);
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: radial-gradient(circle at 30% 30%,
+    rgba(255, 255, 255, 0.95),
+    currentColor 70%
+  );
+  transform: scale(1);
+}
+
+/* Reflejos */
+.glass::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.8s ease;
+}
+
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 
+    inset -10px -10px 25px rgba(0, 0, 0, 0.3),
+    inset 5px 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+/* ====== COLORES ====== */
+.yellow .glass { 
+  color: #FFD700;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.blue .glass { 
+  color: #00D4FF;
+  border: 2px solid rgba(0, 212, 255, 0.3);
+}
+
+.pink .glass { 
+  color: #FF69B4;
+  border: 2px solid rgba(255, 105, 180, 0.3);
+}
+
+/* ====== ENCENDIDO ====== */
+.bulb.on .glass {
+  opacity: 1;
+  filter: brightness(1.8) saturate(1.5);
+  box-shadow:
+    0 0 30px currentColor,
+    0 0 60px currentColor,
+    0 0 120px currentColor,
+    inset 0 0 20px rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+  animation: glowPulse 2s infinite alternate;
+}
+
+.bulb.on .glass::before {
+  background: rgba(255, 255, 255, 0.95);
+  width: 22px;
+  height: 22px;
+}
+
+/* ====== ANIMACIONES ====== */
+@keyframes glowPulse {
+  0% { 
+    box-shadow:
+      0 0 30px currentColor,
+      0 0 60px currentColor,
+      0 0 120px currentColor;
+  }
+  100% { 
+    box-shadow:
+      0 0 40px currentColor,
+      0 0 80px currentColor,
+      0 0 150px currentColor;
+  }
+}
+
+.bulb.swing {
+  animation: swing 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.bulb.idle {
+  animation: idleSwing 4s ease-in-out infinite;
+}
+
+.cord.swing {
+  animation: cordSwing 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+/* Keyframes */
+@keyframes swing {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(8deg); }
+  50% { transform: rotate(-8deg); }
+  75% { transform: rotate(4deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes idleSwing {
+  0% { transform: rotate(3deg); }
+  50% { transform: rotate(-3deg); }
+  100% { transform: rotate(3deg); }
+}
+
+@keyframes cordSwing {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(6deg); }
+  50% { transform: rotate(-6deg); }
+  75% { transform: rotate(3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* ====== PANEL DE INFORMACIÓN ====== */
+.info-panel {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 30px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(15px);
+  padding: 15px 30px;
+  border-radius: 50px;
+  z-index: 100;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.day .info-panel {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.info-panel > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+body.day .info-panel > div {
+  color: #333;
+}
+
+.info-panel i {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.day-icon, .night-icon {
+  display: none;
+}
+
+body.day .day-icon {
+  display: inline;
+  color: #FFA500;
+}
+
+body.night .night-icon {
+  display: inline;
+  color: #6495ED;
+}
+
+/* ====== CONTROLES ====== */
+.controls {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 100;
+}
+
+.controls button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(50, 50, 50, 0.9));
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.5px;
+}
+
+.controls button:hover {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(70, 70, 70, 0.9));
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.controls button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+body.day .controls button {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(230, 230, 230, 0.95));
+  color: #333;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+body.day .controls button:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(240, 240, 240, 1));
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 1024px) {
+  .lightBulbs {
+    gap: 60px;
+  }
+  
+  .info-panel {
+    gap: 20px;
+    padding: 12px 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .lightBulbs {
+    gap: 40px;
+    margin-top: 60px;
+  }
+  
+  .bulb {
+    width: 100px;
+    height: 400px;
+  }
+  
+  .glass {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .info-panel {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 20px;
+    bottom: 20px;
+  }
+  
+  .controls {
+    flex-direction: column;
+    top: 10px;
+  }
+  
+  .controls button {
+    padding: 10px 20px;
+  }
+}
+.particle {
+  position: absolute;
+  background: currentColor;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}/* ====== GLOBAL ====== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #111 0%, #222 100%);
+  transition: background-color 1s ease, background-image 1s ease;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Sombra ambiental - MEJORADA */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top,
+    rgba(255, 255, 255, 0.15),
+    rgba(0, 0, 0, 0) 70%
+  );
+  pointer-events: none;
+  transition: opacity 1s ease, background 1s ease;
+  opacity: 1;
+  z-index: 0;
+}
+
+/* Modo Día */
+body.day {
+  background: linear-gradient(135deg, #f2f2f2 0%, #e6e6e6 100%);
+}
+
+body.day::after {
+  background: radial-gradient(circle at top,
+    rgba(255, 255, 255, 0.7),
+    rgba(242, 242, 242, 0) 70%
+  );
+  opacity: 0.6;
+}
+
+/* Modo Noche */
+body.night::after {
+  opacity: 1;
+}
+
+/* ====== CONTENEDOR ====== */
+.lightBulbs {
+  display: flex;
+  gap: 90px;
+  margin-top: 40px;
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+body.day .lightBulbs {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ====== BOMBILLO ====== */
+.bulb {
+  position: relative;
+  width: 120px;
+  height: 450px;
+  cursor: pointer;
+  transform-origin: top center;
+  transition: transform 0.3s ease;
+}
+
+.bulb:hover {
+  transform: translateY(-5px);
+}
+
+/* Etiqueta del bombillo */
+.bulb-label {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.bulb:hover .bulb-label {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.9);
+}
+
+body.day .bulb-label {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+/* ====== CABLE ====== */
+.cord {
+  width: 4px;
+  height: 220px;
+  background: linear-gradient(to bottom, #333, #000);
+  margin: 0 auto;
+  transform-origin: top;
+  border-radius: 2px;
+}
+
+/* ====== SOPORTE ====== */
+.holder {
+  width: 44px;
+  height: 22px;
+  background: linear-gradient(to bottom, #444, #222);
+  border-radius: 6px;
+  margin: 0 auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* ====== VIDRIO ====== */
+.glass {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin: 12px auto;
+  opacity: 0.15;
+  filter: brightness(0.6);
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: radial-gradient(circle at 30% 30%,
+    rgba(255, 255, 255, 0.95),
+    currentColor 70%
+  );
+  transform: scale(1);
+}
+
+/* Reflejos */
+.glass::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  transition: all 0.8s ease;
+}
+
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 
+    inset -10px -10px 25px rgba(0, 0, 0, 0.3),
+    inset 5px 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+/* ====== COLORES ====== */
+.yellow .glass { 
+  color: #FFD700;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.blue .glass { 
+  color: #00D4FF;
+  border: 2px solid rgba(0, 212, 255, 0.3);
+}
+
+.pink .glass { 
+  color: #FF69B4;
+  border: 2px solid rgba(255, 105, 180, 0.3);
+}
+
+/* ====== ENCENDIDO ====== */
+.bulb.on .glass {
+  opacity: 1;
+  filter: brightness(1.8) saturate(1.5);
+  box-shadow:
+    0 0 30px currentColor,
+    0 0 60px currentColor,
+    0 0 120px currentColor,
+    inset 0 0 20px rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+  animation: glowPulse 2s infinite alternate;
+}
+
+.bulb.on .glass::before {
+  background: rgba(255, 255, 255, 0.95);
+  width: 22px;
+  height: 22px;
+}
+
+/* ====== ANIMACIONES ====== */
+@keyframes glowPulse {
+  0% { 
+    box-shadow:
+      0 0 30px currentColor,
+      0 0 60px currentColor,
+      0 0 120px currentColor;
+  }
+  100% { 
+    box-shadow:
+      0 0 40px currentColor,
+      0 0 80px currentColor,
+      0 0 150px currentColor;
+  }
+}
+
+.bulb.swing {
+  animation: swing 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.bulb.idle {
+  animation: idleSwing 4s ease-in-out infinite;
+}
+
+.cord.swing {
+  animation: cordSwing 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+/* Keyframes */
+@keyframes swing {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(8deg); }
+  50% { transform: rotate(-8deg); }
+  75% { transform: rotate(4deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes idleSwing {
+  0% { transform: rotate(3deg); }
+  50% { transform: rotate(-3deg); }
+  100% { transform: rotate(3deg); }
+}
+
+@keyframes cordSwing {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(6deg); }
+  50% { transform: rotate(-6deg); }
+  75% { transform: rotate(3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* ====== PANEL DE INFORMACIÓN ====== */
+.info-panel {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 30px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(15px);
+  padding: 15px 30px;
+  border-radius: 50px;
+  z-index: 100;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.day .info-panel {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.info-panel > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+body.day .info-panel > div {
+  color: #333;
+}
+
+.info-panel i {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.day-icon, .night-icon {
+  display: none;
+}
+
+body.day .day-icon {
+  display: inline;
+  color: #FFA500;
+}
+
+body.night .night-icon {
+  display: inline;
+  color: #6495ED;
+}
+
+/* ====== CONTROLES ====== */
+.controls {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 100;
+}
+
+.controls button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(50, 50, 50, 0.9));
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.5px;
+}
+
+.controls button:hover {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(70, 70, 70, 0.9));
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.controls button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+body.day .controls button {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(230, 230, 230, 0.95));
+  color: #333;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+body.day .controls button:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(240, 240, 240, 1));
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 1024px) {
+  .lightBulbs {
+    gap: 60px;
+  }
+  
+  .info-panel {
+    gap: 20px;
+    padding: 12px 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .lightBulbs {
+    gap: 40px;
+    margin-top: 60px;
+  }
+  
+  .bulb {
+    width: 100px;
+    height: 400px;
+  }
+  
+  .glass {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .info-panel {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 20px;
+    bottom: 20px;
+  }
+  
+  .controls {
+    flex-direction: column;
+    top: 10px;
+  }
+  
+  .controls button {
+    padding: 10px 20px;
+  }
+}
+.particle {
+  position: absolute;
+  background: currentColor;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
