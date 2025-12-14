@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Light Bulb Animation - Mejorado</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="lightBulbs">
+  <div class="bulb yellow" data-bg="#fef9c3">
+    <div class="cord"></div>
+    <div class="holder"></div>
+    <div class="glass"></div>
+    <div class="bulb-label">1</div>
+  </div>
+
+  <div class="bulb blue" data-bg="#cceeff">
+    <div class="cord"></div>
+    <div class="holder"></div>
+    <div class="glass"></div>
+    <div class="bulb-label">2</div>
+  </div>
+
+  <div class="bulb pink" data-bg="#ffd6f5">
+    <div class="cord"></div>
+    <div class="holder"></div>
+    <div class="glass"></div>
+    <div class="bulb-label">3</div>
+  </div>
+</div>
+
+<!-- Info Panel -->
+<div class="info-panel">
+  <div class="time-display">
+    <i class="fas fa-clock"></i>
+    <span id="currentTime">--:--</span>
+  </div>
+  <div class="mode-display">
+    <i class="fas fa-sun day-icon"></i>
+    <i class="fas fa-moon night-icon"></i>
+    <span id="currentMode">Modo Automático</span>
+  </div>
+  <div class="bulb-count">
+    <i class="fas fa-lightbulb"></i>
+    <span id="activeBulbs">0/3</span>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
